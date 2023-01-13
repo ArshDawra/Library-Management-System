@@ -6,7 +6,8 @@ const {
     postLogIn,
     postSignUp,
     updateUser,
-    deleteUser
+    deleteUser,
+    getLogOut
 } = require('../controllers/AuthContoller');
 const {
     getAdmin,
@@ -25,11 +26,11 @@ router.get('/bookList',protectAdminRoute,getBookList);
 router.post('/addBook',protectAdminRoute,addBook);
 router.patch('/modifyBook',protectAdminRoute,modifyBook);
 router.delete('/deleteBook',protectAdminRoute,deleteBook);
+router.get('/logOut',protectAdminRoute,getLogOut);
 router.get('/:userEmail',protectAdminRoute,getAdmin);
 router.delete('/:userEmail',protectAdminRoute,deleteUser);
 router.patch('/:userEmail',protectAdminRoute,updateUser);
 
 module.exports = router;
-// count 
-// cookies sessions
+
 

@@ -6,7 +6,8 @@ const {
     postLogIn,
     postSignUp,
     updateUser,
-    deleteUser
+    deleteUser,
+    getLogOut
 } = require('../controllers/AuthContoller');
 const {
     getClient,
@@ -27,10 +28,9 @@ router.patch('/issueBook',protectClientRoute,issueBook);
 router.patch('/renewBook',protectClientRoute,renewBook);
 router.patch('/returnBook',protectClientRoute,returnBook);
 router.patch('/clearFine',protectClientRoute,clearFine);
+router.get('/logOut',protectClientRoute,getLogOut);
 router.get('/:userEmail',protectClientRoute,getClient);
 router.delete('/:userEmail',protectClientRoute,deleteUser);
 router.patch('/:userEmail ',protectClientRoute,updateUser);
 
 module.exports = router;
-// logout session sth
-// fine system on every login -> dashboard

@@ -1,5 +1,7 @@
 const users = require('../models/userModel');
+const bcrypt = require('bcrypt');
 
+var session;
 async function getSignUp (req,res) {
     try{
     // send the frontend signup 
@@ -32,12 +34,16 @@ async function postSignUp (req,res) {
     try{
     let dataObj = req.body;
     let user = await users.create(dataObj);
+    session = req.session;
+    session.userEmail=req.body.userEmail;
     res.json({
         message : "User Signed Up",
         data : user
     });
+    //redirect to dashboard
     }
     catch(err){
+        //redirect to signup page on any error
         res.json({
             message : err.message
         });
@@ -50,7 +56,12 @@ try {
     let password = req.body.password;
     let user = await users.findOne({userEmail : userEmail});
     if(user){
-        if(password == user.password){
+        let hashedPassword=user.password;
+        let flag=bcrypt.compare(password,hashedPassword);
+        if(flag){
+        session = req.session;
+        session.userEmail=req.body.userEmail;
+        console.log(session.userEmail)
         return res.json({
             message : "User logged In"
         });
@@ -74,6 +85,21 @@ catch(err){
 }
 }
 
+async function getLogOut (req,res) {
+    try{
+    req.session.destroy();
+    await res.json({
+        message : "Logged Out!"
+    });
+    //render login page
+    }
+    catch(err){
+        res.json({
+            message : err.message
+        });
+    }
+}
+
 async function updateUser (req,res){
         // mandatory for user to enter userEmail and Password
         try {
@@ -81,7 +107,9 @@ async function updateUser (req,res){
             let password = req.body.password;
             let user = await users.findOne({userEmail : userEmail});
             if(user){
-                if(password == user.password){
+                let hashedPassword=user.password;
+                let flag=bcrypt.compare(password,hashedPassword);
+                if(flag){
                     let dataToBeUpdated =  req.body;
                     let user = await users.findOneAndUpdate({userEmail : req.body.userEmail},dataToBeUpdated);
                     res.json({
@@ -115,7 +143,9 @@ async function deleteUser (req,res){
         let password = req.body.password;
         let user = await users.findOne({userEmail : userEmail});
         if(user){
-            if(password == user.password){
+            let hashedPassword=user.password;
+            let flag=bcrypt.compare(password,hashedPassword);
+            if(flag){
                 let user = await users.findOneAndDelete({userEmail : req.body.userEmail});
                 res.json({
                     message : "User's account has been deleted",
@@ -147,5 +177,6 @@ module.exports ={
     postLogIn,
     postSignUp,
     updateUser,
-    deleteUser
+    deleteUser,
+    getLogOut
 }
