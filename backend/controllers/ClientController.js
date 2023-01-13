@@ -181,8 +181,9 @@ async function clearFine(req,res){
     } 
 }
 
-let flag = true; // client logged in or not
 function protectClientRoute(req,res,next){
+// client logged in or not
+    let flag = req.session;
     if(flag){
         next();
     }

@@ -66,8 +66,8 @@ async function deleteBook(req,res){
     }
 }
 
-let flag = true; // admin logged in or not
 function protectAdminRoute(req,res,next){
+    let flag = req.session;// admin logged in or not
     if(flag){
         next();
     }
